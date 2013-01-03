@@ -127,7 +127,7 @@
             this.Controls.Add(this.button1);
             this.Controls.Add(this.textBox);
             this.Name = "Form1";
-            this.Text = "Form1";
+            this.Text = "Парсер стен";
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
