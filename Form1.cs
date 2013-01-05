@@ -1,13 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
-using System.Net;
 using System.IO;
+using System.Net;
+using System.Windows.Forms;
 using Newtonsoft.Json;
 
 namespace ParserWallsVK
@@ -18,8 +12,16 @@ namespace ParserWallsVK
         DateTime date;
         int likes;
         string text;
+
         string textHtml = null;
         int count; /// количество сообшений на стене
+                   
+        string ApiUrl;
+        WebRequest wrq;
+        WebResponse wrs;
+        Stream strm;
+        StreamReader sr;
+
         public Form1()
         {
             InitializeComponent();
@@ -29,35 +31,14 @@ namespace ParserWallsVK
         {
             RichBox.Text = "";
             textBox.Text = "";
-            string minus = null;/// пусто - пользователь, минус - группа
-            if (radioButton1.Checked) minus = "-";
-
-            string ApiUrl = @"https://api.vk.com/method/wall.get?owner_id=" + minus + idGroup.Text;
-            WebRequest wrq;
-            WebResponse wrs;
-            Stream strm;
-            StreamReader sr;
             string line;
             try
             {
-                wrq = WebRequest.Create(ApiUrl);
-                wrs = wrq.GetResponse();
-                strm = wrs.GetResponseStream();
-                sr = new StreamReader(strm);
-                line = sr.ReadLine();
-                strm.Close();
-
-                JsonTextReader reader = new JsonTextReader(new StringReader(line));
-
-                reader.Read(); reader.Read(); reader.Read(); reader.Read(); reader.Read(); reader.Read();reader.Read();
-            
-                count = Convert.ToInt32(reader.Value);
-
+                int countN = on();
                 countLabel.Text = "На стене было " + count +" записей.";
-
-                for (int i = 1; i < count; i++)
+                for (int i = with(); i <= countN; i++)
                 {
-                    ApiUrl = @"https://api.vk.com/method/wall.getById?posts="+ minus + idGroup.Text + "_" + i;
+                    ApiUrl = @"https://api.vk.com/method/wall.getById?posts=" + (groupRadioButton.Checked ? "-" : "") + idGroup.Text + "_" + i;
                     wrq = WebRequest.Create(ApiUrl);
                     wrs = wrq.GetResponse();
                     strm = wrs.GetResponseStream();
@@ -65,7 +46,7 @@ namespace ParserWallsVK
                     line = sr.ReadLine();
                     strm.Close();
                     textBox.Text = line;
-                    if (line.Length < 20) continue;
+                    if (line.Length < 20) continue; /// Если ответ пустой, то значит запись была удаленна и мы тоже пропускаем её
                     parseJSON(line);
                     textHtml += "ID: " + id + "\nДата: " + date + "\nLike: " + likes + "\nТекст:\n" + text + "\n\n";
                     RichBox.Text = textHtml;
@@ -86,6 +67,36 @@ namespace ParserWallsVK
             date = (new DateTime(1970, 1, 1, 0, 0, 0, 0)).AddSeconds(rg.response[0].date);
             likes = rg.response[0].likes.count;
             text = rg.response[0].text;
+        }
+
+        private int with()
+        {
+            if (withEdit.Text != "")
+            {
+                if (Convert.ToInt32(withEdit.Text) > 1) return Convert.ToInt32(withEdit.Text);
+            }
+            return 1;
+        }
+
+        private int on()
+        {
+            ApiUrl = @"https://api.vk.com/method/wall.get?owner_id=" + (groupRadioButton.Checked ? "-" : "") + idGroup.Text;/// пусто - пользователь, минус - группа
+            wrq = WebRequest.Create(ApiUrl);
+            wrs = wrq.GetResponse();
+            strm = wrs.GetResponseStream();
+            sr = new StreamReader(strm);
+            string line = sr.ReadLine();
+            strm.Close();
+
+            JsonTextReader reader = new JsonTextReader(new StringReader(line));
+            reader.Read(); reader.Read(); reader.Read(); reader.Read(); reader.Read(); reader.Read(); reader.Read();
+            count = Convert.ToInt32(reader.Value);
+
+            if (onEdit.Text != "")
+            {
+                if (Convert.ToInt32(onEdit.Text) >= 1) return Convert.ToInt32(onEdit.Text);
+            }
+            return count;
         }
     }
 }
