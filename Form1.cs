@@ -13,7 +13,7 @@ namespace ParserWallsVK
         int likes;
         string text;
 
-        string textHtml = null;
+        string textHtml = "<!DOCTYPE html>" + "<meta charset='utf-8'>" + "<link href='bootstrap.css' rel='stylesheet' media='screen'>";
         int count; /// количество сообшений на стене
                    
         string ApiUrl;
@@ -38,7 +38,7 @@ namespace ParserWallsVK
                 countLabel.Text = "На стене было " + count +" записей.";
                 for (int i = with(); i <= countN; i++)
                 {
-                    ApiUrl = @"https://api.vk.com/method/wall.getById?posts=" + (groupRadioButton.Checked ? "-" : "") + idGroup.Text + "_" + i;
+                    ApiUrl = @"https://api.vk.com/method/wall.getById?posts=" + (groupRadioButton.Checked ? "-" : "") + idEdit.Text + "_" + i;
                     wrq = WebRequest.Create(ApiUrl);
                     wrs = wrq.GetResponse();
                     strm = wrs.GetResponseStream();
@@ -48,9 +48,13 @@ namespace ParserWallsVK
                     textBox.Text = line;
                     if (line.Length < 20) continue; /// Если ответ пустой, то значит запись была удаленна и мы тоже пропускаем её
                     parseJSON(line);
-                    textHtml += "ID: " + id + "\nДата: " + date + "\nLike: " + likes + "\nТекст:\n" + text + "\n\n";
-                    RichBox.Text = textHtml;
+                    line = "ID: " + id + "\nДата: " + date + "\nLike: " + likes + "\nТекст:\n" + text + "\n\n";
+                    RichBox.Text += line.Replace('\"', '"');
+                    textHtml += "<div class='hero-unit'>" + "ID: <a href='http://" + "vk.com/public" + idEdit.Text + "?w=wall-" + idEdit.Text + "_" + id + @"'>" + id + "</a>" + "<br>Дата: " + date + "<br>Понравилось: <i class='icon-heart'></i>" + likes + "<br>Текст:<br>" + text + "</div>";
                 }
+
+                textHtml += "</html>";
+                File.WriteAllText("Wall" + (groupRadioButton.Checked ? "ClubId" : "UserId") + idEdit.Text + ".html", textHtml);
             }
             catch (System.Exception ex)
             {
@@ -80,7 +84,7 @@ namespace ParserWallsVK
 
         private int on()
         {
-            ApiUrl = @"https://api.vk.com/method/wall.get?owner_id=" + (groupRadioButton.Checked ? "-" : "") + idGroup.Text;/// пусто - пользователь, минус - группа
+            ApiUrl = @"https://api.vk.com/method/wall.get?owner_id=" + (groupRadioButton.Checked ? "-" : "") + idEdit.Text;/// пусто - пользователь, минус - группа
             wrq = WebRequest.Create(ApiUrl);
             wrs = wrq.GetResponse();
             strm = wrs.GetResponseStream();
@@ -98,5 +102,6 @@ namespace ParserWallsVK
             }
             return count;
         }
+
     }
 }

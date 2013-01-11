@@ -30,7 +30,7 @@
         {
             this.textBox = new System.Windows.Forms.RichTextBox();
             this.button1 = new System.Windows.Forms.Button();
-            this.idGroup = new System.Windows.Forms.TextBox();
+            this.idEdit = new System.Windows.Forms.TextBox();
             this.RichBox = new System.Windows.Forms.RichTextBox();
             this.groupRadioButton = new System.Windows.Forms.RadioButton();
             this.userRadioButton = new System.Windows.Forms.RadioButton();
@@ -61,12 +61,12 @@
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
-            // idGroup
+            // idEdit
             // 
-            this.idGroup.Location = new System.Drawing.Point(218, 11);
-            this.idGroup.Name = "idGroup";
-            this.idGroup.Size = new System.Drawing.Size(100, 20);
-            this.idGroup.TabIndex = 2;
+            this.idEdit.Location = new System.Drawing.Point(218, 11);
+            this.idEdit.Name = "idEdit";
+            this.idEdit.Size = new System.Drawing.Size(100, 20);
+            this.idEdit.TabIndex = 2;
             // 
             // RichBox
             // 
@@ -164,7 +164,7 @@
             this.Controls.Add(this.countLabel);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.RichBox);
-            this.Controls.Add(this.idGroup);
+            this.Controls.Add(this.idEdit);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.textBox);
             this.Name = "Form1";
@@ -180,7 +180,7 @@
 
         private System.Windows.Forms.RichTextBox textBox;
         private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.TextBox idGroup;
+        private System.Windows.Forms.TextBox idEdit;
         private System.Windows.Forms.RichTextBox RichBox;
         private System.Windows.Forms.RadioButton groupRadioButton;
         private System.Windows.Forms.RadioButton userRadioButton;
