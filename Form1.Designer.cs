@@ -47,6 +47,7 @@
             // 
             this.textBox.Location = new System.Drawing.Point(13, 81);
             this.textBox.Name = "textBox";
+            this.textBox.ReadOnly = true;
             this.textBox.Size = new System.Drawing.Size(431, 110);
             this.textBox.TabIndex = 0;
             this.textBox.Text = "";
@@ -67,11 +68,13 @@
             this.idEdit.Name = "idEdit";
             this.idEdit.Size = new System.Drawing.Size(100, 20);
             this.idEdit.TabIndex = 2;
+            this.idEdit.KeyDown += new System.Windows.Forms.KeyEventHandler(this.idEdit_KeyDown);
             // 
             // RichBox
             // 
             this.RichBox.Location = new System.Drawing.Point(12, 198);
             this.RichBox.Name = "RichBox";
+            this.RichBox.ReadOnly = true;
             this.RichBox.Size = new System.Drawing.Size(432, 207);
             this.RichBox.TabIndex = 3;
             this.RichBox.Text = "";
@@ -126,6 +129,7 @@
             this.withEdit.Size = new System.Drawing.Size(58, 20);
             this.withEdit.TabIndex = 8;
             this.withEdit.Text = "1";
+            this.withEdit.KeyDown += new System.Windows.Forms.KeyEventHandler(this.withEdit_KeyDown);
             // 
             // onEdit
             // 
@@ -133,6 +137,7 @@
             this.onEdit.Name = "onEdit";
             this.onEdit.Size = new System.Drawing.Size(58, 20);
             this.onEdit.TabIndex = 9;
+            this.onEdit.KeyDown += new System.Windows.Forms.KeyEventHandler(this.onEdit_KeyDown);
             // 
             // label1
             // 

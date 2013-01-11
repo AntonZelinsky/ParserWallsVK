@@ -130,5 +130,29 @@ namespace ParserWallsVK
             return count;
         }
 
+        private void withEdit_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyValue < 48 | e.KeyValue > 57 & e.KeyValue < 96 | e.KeyValue > 105)
+                e.SuppressKeyPress = true;
+            if (e.KeyValue == 8 | e.KeyValue == 46)
+                e.SuppressKeyPress = false;
+        }
+
+        private void onEdit_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyValue < 48 | e.KeyValue > 57 & e.KeyValue < 96 | e.KeyValue > 105)
+                e.SuppressKeyPress = true;
+            if (e.KeyValue == 8 | e.KeyValue == 46)
+                e.SuppressKeyPress = false;
+        }
+
+        private void idEdit_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyValue < 48 | e.KeyValue > 57 & e.KeyValue < 96 | e.KeyValue > 105)
+                e.SuppressKeyPress = true;
+            if (e.KeyValue == 8 | e.KeyValue == 46)
+                e.SuppressKeyPress = false;
+        }
+
     }
 }
