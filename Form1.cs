@@ -48,7 +48,7 @@ namespace ParserWallsVK
                     wrq = WebRequest.Create(ApiUrl);
                     wrs = wrq.GetResponse();
                 }
-                catch (System.Exception ex)
+                catch (Exception ex)
                 {
                     MessageBox.Show(" Не удалось получить данные.\n Проверьте подключение к интернету.");
                     return;
@@ -97,7 +97,7 @@ namespace ParserWallsVK
                 wrq = WebRequest.Create(ApiUrl);
                 wrs = wrq.GetResponse();
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show(" Не удалось получить данные.\n Проверьте подключение к интернету.");
                 return 0;
@@ -109,14 +109,20 @@ namespace ParserWallsVK
             strm.Close();
 
             JsonTextReader reader = new JsonTextReader(new StringReader(line));
-            reader.Read(); reader.Read(); reader.Read(); reader.Read(); reader.Read(); reader.Read(); reader.Read();
+            reader.Read(); reader.Read();
+            if (reader.Value.ToString() == "error")
+            {
+                MessageBox.Show(" С данным идентификатором " + (groupRadioButton.Checked ? "группа" : "пользователь") + " не существует.");
+                return 0;
+            }
+            reader.Read(); reader.Read(); reader.Read(); reader.Read(); reader.Read();
             count = Convert.ToInt32(reader.Value);
 
             if (onEdit.Text != "")
             {
                 if (Convert.ToInt32(onEdit.Text) < Convert.ToInt32(withEdit.Text))
                 {
-                    MessageBox.Show(@" Неверно задано ограничения, на получение записей.\n Число ""с какого"", больше чем число ""по какое"".");
+                    MessageBox.Show(" Неверно задано ограничения, на получение записей.\n" + @" Число ""с какого"", больше чем число ""по какое"".");
                     return 0;
                 }
                 if (Convert.ToInt32(onEdit.Text) >= 1) return Convert.ToInt32(onEdit.Text);
