@@ -25,6 +25,7 @@ namespace ParserWallsVK
         public Form1()
         {
             InitializeComponent();
+            idEdit.Text = "22822305";
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -32,35 +33,41 @@ namespace ParserWallsVK
             RichBox.Text = "";
             textBox.Text = "";
             string line;
-            try
+            
+            int countN = on();
+            if (countN == 0)
             {
-                int countN = on();
-                countLabel.Text = "На стене было " + count +" записей.";
-                for (int i = with(); i <= countN; i++)
-                {
-                    ApiUrl = @"https://api.vk.com/method/wall.getById?posts=" + (groupRadioButton.Checked ? "-" : "") + idEdit.Text + "_" + i;
-                    wrq = WebRequest.Create(ApiUrl);
-                    wrs = wrq.GetResponse();
-                    strm = wrs.GetResponseStream();
-                    sr = new StreamReader(strm);
-                    line = sr.ReadLine();
-                    strm.Close();
-                    textBox.Text = line;
-                    if (line.Length < 20) continue; /// Если ответ пустой, то значит запись была удаленна и мы тоже пропускаем её
-                    parseJSON(line);
-                    line = "ID: " + id + "\nДата: " + date + "\nLike: " + likes + "\nТекст:\n" + text + "\n\n";
-                    RichBox.Text += line.Replace('\"', '"');
-                    textHtml += "<div class='hero-unit'>" + "ID: <a href='http://" + "vk.com/public" + idEdit.Text + "?w=wall-" + idEdit.Text + "_" + id + @"'>" + id + "</a>" + "<br>Дата: " + date + "<br>Понравилось: <i class='icon-heart'></i>" + likes + "<br>Текст:<br>" + text + "</div>";
-                }
-
-                textHtml += "</html>";
-                File.WriteAllText("Wall" + (groupRadioButton.Checked ? "ClubId" : "UserId") + idEdit.Text + ".html", textHtml);
-            }
-            catch (System.Exception ex)
-            {
-                MessageBox.Show(" Неудалось получить данные.\n Проверьте подключение к интернету.");
                 return;
             }
+            countLabel.Text = "На стене было " + count +" записей.";
+            for (int i = with(); i <= countN; i++)
+            {
+                ApiUrl = "https://api.vk.com/method/wall.getById?posts=" + (groupRadioButton.Checked ? "-" : "") + idEdit.Text + "_" + i;
+                try
+                {
+                    wrq = WebRequest.Create(ApiUrl);
+                    wrs = wrq.GetResponse();
+                }
+                catch (System.Exception ex)
+                {
+                    MessageBox.Show(" Не удалось получить данные.\n Проверьте подключение к интернету.");
+                    return;
+                }
+                strm = wrs.GetResponseStream();
+                sr = new StreamReader(strm);
+                line = sr.ReadLine();
+                strm.Close();
+                textBox.Text = line;
+                if (line.Length < 20) continue; /// Если ответ пустой, то значит запись была удаленна и мы тоже пропускаем её
+                parseJSON(line);
+                line = "ID: " + id + "\nДата: " + date + "\nLike: " + likes + "\nТекст:\n" + text + "\n\n";
+                RichBox.Text += line.Replace('\"', '"');
+                textHtml += "<div class='hero-unit'>" + "ID: <a href='http://" + "vk.com/public" + idEdit.Text + "?w=wall-" + idEdit.Text + "_" + id + @"'>" + id + "</a>" + "<br>Дата: " + date + "<br>Понравилось: <i class='icon-heart'></i>" + likes + "<br>Текст:<br>" + text + "</div>";
+            }
+
+            textHtml += "</html>";
+            File.WriteAllText("Wall" + (groupRadioButton.Checked ? "ClubId" : "UserId") + idEdit.Text + ".html", textHtml);
+
 
         }
 
@@ -85,8 +92,17 @@ namespace ParserWallsVK
         private int on()
         {
             ApiUrl = @"https://api.vk.com/method/wall.get?owner_id=" + (groupRadioButton.Checked ? "-" : "") + idEdit.Text;/// пусто - пользователь, минус - группа
-            wrq = WebRequest.Create(ApiUrl);
-            wrs = wrq.GetResponse();
+            try
+            {
+                wrq = WebRequest.Create(ApiUrl);
+                wrs = wrq.GetResponse();
+            }
+            catch (System.Exception ex)
+            {
+                MessageBox.Show(" Не удалось получить данные.\n Проверьте подключение к интернету.");
+                return 0;
+            }
+
             strm = wrs.GetResponseStream();
             sr = new StreamReader(strm);
             string line = sr.ReadLine();
@@ -98,6 +114,11 @@ namespace ParserWallsVK
 
             if (onEdit.Text != "")
             {
+                if (Convert.ToInt32(onEdit.Text) < Convert.ToInt32(withEdit.Text))
+                {
+                    MessageBox.Show(@" Неверно задано ограничения, на получение записей.\n Число ""с какого"", больше чем число ""по какое"".");
+                    return 0;
+                }
                 if (Convert.ToInt32(onEdit.Text) >= 1) return Convert.ToInt32(onEdit.Text);
             }
             return count;
